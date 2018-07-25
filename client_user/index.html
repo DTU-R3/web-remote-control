@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <script src="peer.js"></script>
+</head>
+
+<body>
+  <a-scene>
+    <a-videosphere src="#player"></a-videosphere>
+    <a-camera user-height="0"></a-camera>
+    <a-assets>
+      <video id="player" autoplay="true"></video>
+    </a-assets>
+  </a-scene>
+
+  <button style="position:absolute;top:10px;right:10px;" id="call">call</button>
+
+  <script src="user.js"></script>
+</body>
+
+</html>
