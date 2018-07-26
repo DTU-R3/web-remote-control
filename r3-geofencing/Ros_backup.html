@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.9/mazemap.min.css">
+    <script type='text/javascript' src='https://api.mazemap.com/js/v2.0.9/mazemap.min.js'></script>
+    <script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+    <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+	
+</head>
+<body>
+    <div id="map" class="mazemap"></div>
+	<script>
+	"use strict";
+	/* globals Mazemap, ROSLIB */
+	
+		var myMap = new Mazemap.Map({
+		container: 'map',
+		campuses: 89,
+		center: {lng: 12.51423831334035, lat: 55.78276709573176},
+		zoom: 18,
+		zLevel: 3,
+		scrollZoom: true,
+		doubleClickZoom: false,
+		touchZoomRotate: false
+	});
+	
+		myMap.on('load', () => {
+		isMapLoaded = true;
+		// MazeMap ready
+		
+		var lngLat = {lng: robot_lng,lat: robot_lat};
+		//x: lng  y: lat
+
+		var marker = new Mazemap.MazeMarker( {
+			color: "MazeBlue",
+			size: 36,
+			zLevel: 1
+		} ).setLngLat( lngLat ).addTo(myMap);
+			myMap.flyTo({center: lngLat, zoom: 18, speed: 0.8});
+	});
+	
+	var ros = new ROSLIB.Ros({
+	url : 'ws://raspi-ros00:9090/'
+	});
+
+	ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+	});
+ 
+	ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+	});
+ 
+	ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+	});
+	
+	/*
+	var listener = new ROSLIB.Topic({
+  	ros : ros,
+    name : '/raspicam_node/camera_info',
+    messageType : 'sensor_msgs/CameraInfo'
+	});
+ 
+	listener.subscribe(function(message) {
+    console.log('Received message on ' + listener.name + ': ' + message);
+	});*/
+	
+	
+	var listener = new ROSLIB.Topic({
+		ros : ros,
+		name : '/robot_gps_pose',
+		messageType : 'nav_msgs/Odometry'
+	});
+
+	var robot_lat;
+	var robot_lng;
+	var isMapLoaded = false;
+	var i;
+ 
+	listener.subscribe(function (message) {
+		robot_lat = message.pose.pose.position.y;
+		robot_lng = message.pose.pose.position.x;
+		console.log('Received message on ' + listener.name + ': ' + JSON.stringify(message));
+		
+		if (!isMapLoaded) {
+			return;
+		}
+		if (i < 50){
+		i++;
+			return;
+		}
+		i = 0;
+		
+		window.setTimeout(function(){
+		if (map) {
+		marker.remove();
+		map.removeLayer(marker);
+		}
+		}); 
+		
+		var lngLat = {lng: robot_lng,lat: robot_lat};
+		//x: lng  y: lat
+
+		var marker = new Mazemap.MazeMarker( {
+			color: "MazeBlue",
+			size: 36,
+			zLevel: 1
+		} ).setLngLat( lngLat ).addTo(myMap);
+			myMap.flyTo({center: lngLat, zoom: 18, speed: 0.8});
+		
+	});
+	
+	
+	
+	
+	</script>
+</body>

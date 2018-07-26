@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
+
+	<link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.9/mazemap.min.css">
+	<script type='text/javascript' src='https://api.mazemap.com/js/v2.0.9/mazemap.min.js'></script>
+
+	<style>
+		body { margin:0px; padding:0px; width: 100%; height:100%; font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif }
+		#controls{
+			position: absolute;
+			box-sizing: border-box;
+			padding: 10px;
+			top: 10px;
+			left: 60px;
+			width: auto;
+			height: auto;
+			right: 60px;
+			display: flex;
+		}
+		#controls button{
+			margin-top: 0px;
+			background-color: rgb(31, 175, 252);
+			padding: 0px 10px;
+			border-radius: 4px;
+			color: rgb(255, 255, 255);
+			width: auto;
+			border: 0;
+			flex-grow: 1;
+			margin: 0px 10px;
+		}
+	</style>
+</head>
+<body>
+	<div id="map" class="mazemap"></div>
+	<div id="controls" class="mapboxgl-ctrl-group">
+	<button onClick="setRoute(start1, dest1)">Route 1</button>
+	<button onClick="setRoute(start2, dest2)">Route 2</button>
+	<button onClick="setRoute(start1, dest3)">Route 3</button>
+	</div>
+	<script>
+
+		var myMap = new Mazemap.Map({
+			// container id specified in the HTML
+			container: 'map',
+			campuses: 50,
+			center: {lng: -78.49914399674574, lat: 38.03118711249593},
+			zoom: 20.2,
+			zLevel: 1,
+			scrollZoom: true,
+			doubleClickZoom: false,
+			touchZoomRotate: false
+		});
+
+		// Some hardcoded route example start and destinations
+		var start1 = { lngLat: {lng: -78.50003778139148, lat: 38.03098667324329}, zLevel: 0};
+		var start2 = { poiId: 194915 };
+		var dest1 = { lngLat: {lng: -78.49930864263719, lat: 38.03118822249425}, zLevel: 2};
+		var dest2 = { poiId: 195096 };
+		var dest3 = { poiId: 195118};
+		
+	var Lng_waypoint_arr = [];
+	var Lat_waypoint_arr = [];
+	var route_array = [];
+	var n = 0;
+
+		var routeController;
+
+		myMap.on('load', function(){
+
+			routeController = new Mazemap.RouteController(myMap, {
+				routeLineColorPrimary: '#E52337',
+				routeLineColorSecondary: '#888888'
+			});
+			myMap.on('click', onMapClick);
+		});
+
+		function setRoute( start, dest ){
+			routeController.clear(); // Clear existing route, if any
+
+			Mazemap.Data.getRouteJSON(start, dest)
+			.then(function(geojson){
+				var route = geojson.features[0];
+				route.geometry.coordinates = route_array;//,[dest.lngLat.lng,dest.lngLat.lat]];
+				geojson.features[0] = route;
+				console.log('@ geojson', geojson);
+				routeController.setPath(geojson);
+				var bounds = Mazemap.Util.Turf.bbox(geojson);
+				myMap.fitBounds( bounds, {padding: 100000000} );
+			});
+		}
+		
+	function onMapClick(e){
+		
+		var lngLat = e.lngLat;
+		var zLevel = myMap.zLevel;
+		
+		//console.log(lngLat);
+		//Mazemap.Data.getPoiAt(lngLat, zLevel).then( poi => {
+		
+		//if(allowed_list.includes(poi.properties.id)){
+		
+		Lng_waypoint_arr[n] = e.lngLat.lng;
+		Lat_waypoint_arr[n] = e.lngLat.lat;
+		route_array[n] = [e.lngLat.lng, e.lngLat.lat];
+		n++;
+		localStorage.setItem("route", route_array);
+		route_array = localStorage.getItem("route");
+		var a = route_array.split(',');
+		var b = [parseFloat(a[0]),parseFloat(a[1])];
+		console.log(parseFloat(a));
+		//console.log({Lng_waypoint_arr , Lat_waypoint_arr});
+		setRoute(start1, dest1);
+		//}
+		//else{ alert('Waypoint is not allowed in that area');}
+		
+		//}).catch( function(){ return false; } );
+		}
+	
+
+	</script>
+</body>
