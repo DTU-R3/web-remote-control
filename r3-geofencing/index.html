@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.9/mazemap.min.css">
     <script type='text/javascript' src='https://api.mazemap.com/js/v2.0.9/mazemap.min.js'></script>
 	<script src="path/to/vanilla.js"></script>
-	
+
     <style>
         body { margin:0px; padding:0px; width: 100vw; height:100vh; font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; font-size: 14px; line-height: 1.42857143; }
         hr { border: 0; height: 1px; background-color: rgb(216, 216, 216); }
@@ -19,7 +19,7 @@
     <div id="controls" class="mapboxgl-ctrl-group">
 	<div id="poidata"><h2>POI Data</h2><hr /><pre><code id="poi-data"></code></pre></div>
     </div>
-	
+
     <script type="text/javascript">
 
         // Just the same way to initialize as always...
@@ -61,7 +61,7 @@
 
             // un-highlight any already highlighted rooms
             //myMap.highlighter.clear();
-			
+
 
             var lngLat = e.lngLat;
             var zLevel = myMap.zLevel;
@@ -71,13 +71,13 @@
             Mazemap.Data.getPoiAt(lngLat, zLevel).then( poi => {
                 // Run custom highlight function
 				console.log(poi);
-				
+
                 printPoiData(poi);
 				POI_Filter(poi);
                 // Just for visual effect, wait a bit before adding to map and zooming in
                 setTimeout(function(){
                     placePoiMarker(poi);
-					
+
                 },1000);
             }).catch( function(){ return false; } );
         }
@@ -88,10 +88,10 @@
 			//post_data();
 			get_data();
         }
-		
+
 		/*function post_data(){
 			var r = new XMLHttpRequest();
-			r.open("POST", "/r3-geofencing/test.php", true);
+			r.open("POST", "test.php", true);
 			r.onreadystatechange = function () {
 				if (r.readyState != 4 || r.status != 200){
 					return;
@@ -104,12 +104,12 @@
 					}
 			};
 			r.send(JSON.stringify($data));
-			
+
 		}*/
-		
+
 		function get_data(){
 			var read = new XMLHttpRequest();
-			read.open("GET", "/r3-geofencing/data/test.json", true);
+			read.open("GET", "data/test.json", true);
 			read.onreadystatechange = function () {
 				if (read.readyState != 4 || read.status != 200) {
 					return;
@@ -121,11 +121,11 @@
 			};
 			read.send(null);
 		}
- 
+
         function placePoiMarker(poi){
             // Get a center point for the POI, because the data can return a polygon instead of just a point sometimes
             var lngLat = Mazemap.Util.getPoiLngLat(poi);
- 
+
             var mazeMarker = new Mazemap.MazeMarker({
                 color: '#ff00cc',
                 innerCircle: true,
@@ -136,15 +136,15 @@
             })
             .setLngLat(lngLat)
             .addTo(myMap);
- 
+
             // If we have a polygon, use the default 'highlight' function to draw a marked outline around the POI.
             if(poi.geometry.type === "Polygon"){
             var h_light = myMap.highlighter.highlight(poi);
             }
             myMap.flyTo({center: lngLat, zoom: 19, speed: 0.5});
-	
+
         }
-		
+
 		function POI_Filter(poi){
 		var i;
 		var n =1;
@@ -170,7 +170,7 @@
 		a = Math.sin((tempArr[1]*pi/180-lat_filt[n-1]*pi/180)/2) * Math.sin((tempArr[1]*pi/180-lat_filt[n-1]*pi/180)/2) +
 		Math.cos(lat_filt[n-1]) * Math.cos(tempArr[1]) *
         Math.sin((tempArr[0]*pi/180-lng_filt[n-1]*pi/180)/2) * Math.sin((tempArr[0]*pi/180-lng_filt[n-1]*pi/180)/2);
-		c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));  
+		c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 		d = R*c;
 		if (d > 0.25){
 		lng_filt[n] = tempArr[0];
@@ -189,12 +189,12 @@
 		poi.geometry.coordinates[0] = temp;
 		//console.log(poi.geometry.coordinates[0]);
 		}
-		
-		
+
+
 		/*var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
         Math.cos(φ1) * Math.cos(φ2) *
         Math.sin(Δλ/2) * Math.sin(Δλ/2);
 		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));*/
-		
+
     </script>
 </body>
