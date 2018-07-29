@@ -2,21 +2,28 @@
 <html>
 
 <head>
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
   <script src="peer.js"></script>
 </head>
 
 <body>
-  <a-scene>
-    <a-videosphere src="#player"></a-videosphere>
-    <a-camera user-height="0"></a-camera>
-    <a-assets>
-      <video id="player" autoplay="true"></video>
-    </a-assets>
-  </a-scene>
+  <div id="aframe" class="fullheight">
+    <a-scene embedded>
+      <a-videosphere src="#player"></a-videosphere>
+      <a-camera user-height="0"></a-camera>
+      <a-assets>
+        <video id="player" autoplay="true"></video>
+      </a-assets>
+    </a-scene>
 
-  <button style="position:absolute;top:10px;right:10px;" id="call">call</button>
-
+    <button style="position:absolute;top:10px;left:10px;" id="call">call</button>
+  </div>
+  <div id="map" class="fullheight">
+    <OBJECT id="mapobject" class="fullheight" data="../r3-geofencing/Ros.html">
+      Warning: Map could not be included.
+    </OBJECT>
+  </div>
   <script src="user.js"></script>
 </body>
 
