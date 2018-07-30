@@ -3,6 +3,7 @@
 
 <head>
   <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <script src="https://static.robotwebtools.org/roslibjs/0.20.0/roslib.min.js"></script>
   <script src="peer.js"></script>
 </head>
 
@@ -14,9 +15,12 @@
       <video id="player" autoplay="true"></video>
     </a-assets>
   </a-scene>
-
-  <button style="position:absolute;top:10px;right:10px;" id="call">call</button>
-
+  
+  <button style="position:absolute;top:10px;left:10px;" id="call">call</button>
+  <button style="position:absolute;top:50px;left:10px;" id="stop">stop</button>
+  <button style="position:absolute;top:100px;left:10px;" id="forward">forward</button>
+  <button style="position:absolute;top:150px;left:10px;" id="turn_left">turn left</button>
+  <button style="position:absolute;top:150px;left:90px;" id="turn_right">turn right</button>
   <script src="user.js"></script>
 </body>
 
