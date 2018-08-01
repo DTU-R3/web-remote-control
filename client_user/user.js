@@ -110,13 +110,10 @@ var turnRightMsg = new ROSLIB.Message({
   }
 });
 
-
-// keyboard robot control
-window.addEventListener('keypress', function (e) {
-    if (e.code == "ArrowUp") {
-        alert("up");
-    }
-}, false);
+var teleop = new KEYBOARDTELEOP.Teleop({
+  ros: ros,
+  topic: '/cmd_vel'
+});
 
 // button robot control
 forwardBtn.addEventListener("click", event => {
