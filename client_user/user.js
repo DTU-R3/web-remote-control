@@ -15,7 +15,7 @@ callBtn.addEventListener("click", event => {
   });
 });
 
-let peer = new Peer('user', {
+let peer = new Peer('user' + Math.random().toString(36).substr(2, 5), {
   debug: 3,
   host: 'r3.man.dtu.dk',
   path: '/ws',
