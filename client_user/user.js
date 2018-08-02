@@ -38,96 +38,101 @@ peer.on('open', id => {
 
 
 // robot control
-let rosbridge_url = 'ws://pi-desktop:9090/';
+let rosbridge_url =
+  // 'ws://raspi-ros00:9090/';
+  'ws://pi-desktop:9090/';
+  // 'ws://192.38.90.68:9090/';
 
 var ros = new ROSLIB.Ros({
   url : rosbridge_url
 });
 
+
 ros.on('connection', function() {
   console.log('Connected to ', rosbridge_url);
+
+  var teleop = new KEYBOARDTELEOP.Teleop({
+    ros: ros,
+    topic: '/cmd_vel'
+  });
+
+  // var cmd_vel = new ROSLIB.Topic({
+  //   ros : ros,
+  //   name : '/cmd_vel',
+  //   messageType : 'geometry_msgs/Twist'
+  // });
+  //
+  // var forwardMsg = new ROSLIB.Message({
+  //   "linear": {
+  //     "x": 1,
+  //     "y": 0,
+  //     "z": 0
+  //   },
+  //   "angular": {
+  //     "x": 0,
+  //     "y": 0,
+  //     "z": 0
+  //   }
+  // });
+  //
+  // var stopMsg = new ROSLIB.Message({
+  //   "linear": {
+  //     "x": 0,
+  //     "y": 0,
+  //     "z": 0
+  //   },
+  //   "angular": {
+  //     "x": 0,
+  //     "y": 0,
+  //     "z": 0
+  //   }
+  // });
+  //
+  // var turnLeftMsg = new ROSLIB.Message({
+  //   "linear": {
+  //     "x": 0,
+  //     "y": 0,
+  //     "z": 0
+  //   },
+  //   "angular": {
+  //     "x": 0,
+  //     "y": 0,
+  //     "z": 1
+  //   }
+  // });
+  //
+  // var turnRightMsg = new ROSLIB.Message({
+  //   "linear": {
+  //     "x": 0,
+  //     "y": 0,
+  //     "z": 0
+  //   },
+  //   "angular": {
+  //     "x": 0,
+  //     "y": 0,
+  //     "z": -1
+  //   }
+  // });
+  //
+  //
+  // // button robot control
+  // forwardBtn.addEventListener("click", event => {
+  //   cmd_vel.publish(forwardMsg);
+  // });
+  //
+  // stopBtn.addEventListener("click", event => {
+  //   cmd_vel.publish(stopMsg);
+  // });
+  //
+  // turnLeftBtn.addEventListener("click", event => {
+  //   cmd_vel.publish(turnLeftMsg);
+  // });
+  //
+  // turnRightBtn.addEventListener("click", event => {
+  //   cmd_vel.publish(turnRightMsg);
+  // });
 });
 
 ros.on('error', function(error) {
   console.log('Error connecting to websocket server: ', error);
-});
-
-var cmd_vel = new ROSLIB.Topic({
-  ros : ros,
-  name : '/cmd_vel',
-  messageType : 'geometry_msgs/Twist'
-});
-
-var forwardMsg = new ROSLIB.Message({
-  "linear": {
-    "x": 1,
-    "y": 0,
-    "z": 0
-  },
-  "angular": {
-    "x": 0,
-    "y": 0,
-    "z": 0
-  }
-});
-
-var stopMsg = new ROSLIB.Message({
-  "linear": {
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "angular": {
-    "x": 0,
-    "y": 0,
-    "z": 0
-  }
-});
-
-var turnLeftMsg = new ROSLIB.Message({
-  "linear": {
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "angular": {
-    "x": 0,
-    "y": 0,
-    "z": 1
-  }
-});
-
-var turnRightMsg = new ROSLIB.Message({
-  "linear": {
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "angular": {
-    "x": 0,
-    "y": 0,
-    "z": -1
-  }
-});
-
-var teleop = new KEYBOARDTELEOP.Teleop({
-  ros: ros,
-  topic: '/cmd_vel'
-});
-
-// button robot control
-forwardBtn.addEventListener("click", event => {
-  cmd_vel.publish(forwardMsg);
-});
-
-stopBtn.addEventListener("click", event => {
-  cmd_vel.publish(stopMsg);
-});
-
-turnLeftBtn.addEventListener("click", event => {
-  cmd_vel.publish(turnLeftMsg);
-});
-
-turnRightBtn.addEventListener("click", event => {
-  cmd_vel.publish(turnRightMsg);
 });
