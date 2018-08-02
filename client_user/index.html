@@ -18,11 +18,18 @@
     </a-assets>
   </a-scene>
 
-  <button style="position:absolute;top:10px;left:10px;" id="call">call</button>
-  <!-- <button style="position:absolute;top:50px;left:10px;" id="stop">stop</button>
-  <button style="position:absolute;top:100px;left:10px;" id="forward">forward</button>
-  <button style="position:absolute;top:150px;left:10px;" id="turn_left">turn left</button>
-  <button style="position:absolute;top:150px;left:90px;" id="turn_right">turn right</button> -->
+  <form style="position:absolute;top:10px;left:10px;">
+    <input id="robotID" placeholder="Robot ID">
+    <input id="call" type="button" value="Call">
+  </form>
+  <form style="position:absolute;top:40px;left:10px;">
+    <input id="robotAddress" type="list" list="addressList" placeholder="Robot Address">
+    <datalist id="addressList">
+      <option value="ws://pi-desktop:9090/"/>
+      <option value="ws://raspi-ros00:9090/"/>
+    </datalist>
+    <input id="connect" type="button" value="Connect">
+  </form>
   <script src="user.js"></script>
 </body>
 
