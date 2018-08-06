@@ -92,9 +92,7 @@
 	var etage = 1;
 
 	var ros = new ROSLIB.Ros({
-		url :
-      // 'ws://raspi-ros00:9090/',
-      'ws://pi-desktop:9090/',
+		url : window.parent.document.querySelector('#robotAddress').value,
 	});
 
 	if (list_ready){

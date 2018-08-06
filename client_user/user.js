@@ -4,6 +4,8 @@
 var callBtn = document.querySelector('#call');
 var connectBtn = document.querySelector('#connect');
 
+var ros;
+
 callBtn.addEventListener('click', event => {
 
   var call = peer.call(document.querySelector('#robotID').value, new MediaStream());
@@ -15,7 +17,12 @@ callBtn.addEventListener('click', event => {
 
 connectBtn.addEventListener('click', event => {
 
-  var ros = new ROSLIB.Ros({
+  if (ros instanceof ROSLIB.Ros){
+    ros.close();
+    console.log("closed!");
+  }
+
+  ros = new ROSLIB.Ros({
     url : document.querySelector('#robotAddress').value
   });
 
@@ -34,6 +41,18 @@ connectBtn.addEventListener('click', event => {
     alert(error);
     console.log(error);
   });
+
+  // reload map
+  let mapDiv = document.querySelector('#map');
+  mapDiv.innerHTML = ''; // clears mapDiv - important if map was already loaded once
+
+  let mapObject = document.createElement('object');
+  mapObject.innerHTML = 'Warning: Map could not be included.';
+  mapObject.className = 'fullheight';
+  mapObject.setAttribute('id', 'mapobject');
+  mapObject.setAttribute('data', '../r3-geofencing/Ros.html');
+
+  mapDiv.appendChild(mapObject);
 });
 
 let peer = new Peer('user' + Math.random().toString(36).substr(2, 5), {
