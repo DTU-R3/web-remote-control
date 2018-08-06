@@ -1,0 +1,23 @@
+* { padding: 0; margin: 0; }
+html, body {
+    min-height: 100%;
+    height: 100%;
+}
+
+.fullheight {
+  min-height: 100%;
+  height: 100%;
+  float: left;
+}
+
+#aframe {
+  width: 60%;
+}
+
+#map {
+  width: 40%;
+}
+
+#mapobject {
+  width: 100%;
+}

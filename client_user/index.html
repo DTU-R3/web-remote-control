@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
   <script src="https://static.robotwebtools.org/roslibjs/0.20.0/roslib.min.js"></script>
   <script src="https://static.robotwebtools.org/EventEmitter2/0.4.14/eventemitter2.min.js"></script>
@@ -10,13 +11,15 @@
 </head>
 
 <body>
-  <a-scene>
-    <a-videosphere src="#player"></a-videosphere>
-    <a-camera user-height="0"></a-camera>
-    <a-assets>
-      <video id="player" autoplay="true"></video>
-    </a-assets>
-  </a-scene>
+  <div id="aframe" class="fullheight">
+    <a-scene embedded>
+      <a-videosphere src="#player"></a-videosphere>
+      <a-camera user-height="0"></a-camera>
+      <a-assets>
+        <video id="player" autoplay="true"></video>
+      </a-assets>
+    </a-scene>
+  </div>
 
   <form style="position:absolute;top:10px;left:10px;">
     <input id="robotID" placeholder="Robot ID">
@@ -30,6 +33,13 @@
     </datalist>
     <input id="connect" type="button" value="Connect">
   </form>
+
+  <div id="map" class="fullheight">
+    <object id="mapobject" class="fullheight" data="../r3-geofencing/Ros.html">
+      Warning: Map could not be included.
+    </object>
+  </div>
+
   <script src="user.js"></script>
 </body>
 
