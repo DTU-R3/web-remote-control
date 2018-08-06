@@ -71,9 +71,9 @@
 	var myMap = new Mazemap.Map({
 		container: 'map',
 		campuses: 88,
-		center: {lng: 12.397615, lat: 55.731113},
+		center: {lng: 12.514221376888127, lat: 55.78268545984302},
 		zoom: 17,
-		zLevel: 1,
+		zLevel: 3,
 		scrollZoom: true,
 		doubleClickZoom: false,
 		touchZoomRotate: false,
@@ -256,7 +256,7 @@ myMap.on('load', () => {
 			if (read.readyState != 4 || read.status != 200) {
 				return;
 			}
-			alert("Success: " + read.responseText);
+			// alert("Success: " + read.responseText);
 			//TODO: sanitise data, handle exceptions
 			data_x = JSON.parse(read.responseText);
 			data = data_x
