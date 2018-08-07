@@ -1,19 +1,24 @@
 /* jshint esversion: 6 */
 "use strict";
 
-var callBtn = document.querySelector('#call');
-var connectBtn = document.querySelector('#connect');
+let callBtn = document.querySelector('#call');
+let robotAddressInput = document.querySelector('#robotAddress');
+let connectBtn = document.querySelector('#connect');
+let disconnectBtn = document.querySelector('#disconnect');
 let mapDiv = document.querySelector('#map');
 
 let ros = new ROSLIB.Ros;
 
-let reconnect = false;
+let connectionTimeoutHandle;
+const connectionTimeoutValue = 3000; // ms
 
 ros.on('connection', () => {
   console.log('Connected to ', document.querySelector('#robotAddress').value);
 
+  clearTimeout(connectionTimeoutHandle);
+
   // add keyboard controls
-  var teleop = new KEYBOARDTELEOP.Teleop({
+  let teleop = new KEYBOARDTELEOP.Teleop({
     ros: ros,
     topic: '/cmd_vel'
   });
@@ -31,35 +36,42 @@ ros.on('connection', () => {
 ros.on('close', () => {
     mapDiv.innerHTML = '';
 
-    if (reconnect) {
-      ros.connect(document.querySelector('#robotAddress').value);
-      reconnect = false;
-    }
+    robotAddressInput.disabled = false;
+    robotAddressInput.value = '';
+    connectBtn.disabled = false;
+    disconnectBtn.disabled = true;
 });
 
 ros.on('error', error => {
-  alert('Can\'t connect to ' + document.querySelector('#robotAddress').value);
-  console.log('Can\'t connect to ' + document.querySelector('#robotAddress').value, error);
+  alert('Can\'t connect to ' + robotAddressInput.value);
+  console.log('Can\'t connect to ' + robotAddressInput.value, error);
+
+  robotAddressInput.disabled = false;
+  connectBtn.disabled = false;
+  disconnectBtn.disabled = true;
 });
 
+connectBtn.addEventListener('click', event => {
+  ros.connect(robotAddressInput.value);
+
+  connectionTimeoutHandle = setTimeout(function () {ros.close()}, connectionTimeoutValue);
+
+  robotAddressInput.disabled = true;
+  connectBtn.disabled = true;
+  disconnectBtn.disabled = false;
+});
+
+disconnectBtn.addEventListener('click', event => {
+  ros.close();
+});
 
 callBtn.addEventListener('click', event => {
 
-  var call = peer.call(document.querySelector('#robotID').value, new MediaStream());
+  let call = peer.call(document.querySelector('#robotID').value, new MediaStream());
 
   call.on('stream', stream => {
     document.querySelector('#player').srcObject = stream;
   });
-});
-
-connectBtn.addEventListener('click', event => {
-  if (ros.isConnected) {
-    reconnect = true;
-    ros.close();
-  }
-  else {
-    ros.connect(document.querySelector('#robotAddress').value);
-  }
 });
 
 let peer = new Peer('user' + Math.random().toString(36).substr(2, 5), {
