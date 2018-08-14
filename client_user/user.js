@@ -3,6 +3,7 @@
 
 let callBtn = document.querySelector('#call');
 let robotAddressInput = document.querySelector('#robotAddress');
+let robotAddressList = document.querySelector('#robotAddressList');
 let connectBtn = document.querySelector('#connect');
 let disconnectBtn = document.querySelector('#disconnect');
 let mapDiv = document.querySelector('#map');
@@ -95,3 +96,20 @@ peer.on('error', err => {
 peer.on('open', id => {
   console.log('My peer ID is: ' + id);
 });
+
+// add options to the robot address list
+let robotAddressArray = [
+  'raspi-ros00',
+  'raspi-ros01',
+  'pi-desktop',
+  'gazeit-VirtualBox'
+];
+
+let robotAddressPrefix = 'wss://' + window.location.host + '/ros/';
+
+for (let i = 0; i < robotAddressArray.length; i++)
+{
+  let opt =  document.createElement('option');
+  opt.value = robotAddressPrefix + robotAddressArray[i] + '/';
+  robotAddressList.appendChild(opt);
+}
