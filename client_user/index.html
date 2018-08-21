@@ -1,49 +1,51 @@
 <!DOCTYPE html>
-<html>
-
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB" lang="en-GB">
 <head>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
-  <script src="https://static.robotwebtools.org/roslibjs/0.20.0/roslib.min.js"></script>
-  <script src="https://static.robotwebtools.org/EventEmitter2/0.4.14/eventemitter2.min.js"></script>
-  <script src="https://static.robotwebtools.org/keyboardteleopjs/0.3.0/keyboardteleop.js"></script>
-  <script src="peer.js"></script>
+	<meta charset="UTF-8" />
+	<title>DTU-R3 Telepresence robot - User interface</title>
+	<meta name="robots" content="noindex" />
+	<link rel="stylesheet" href="style.css" />
+	<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+	<script src="https://static.robotwebtools.org/roslibjs/0.20.0/roslib.min.js"></script>
+	<script src="https://static.robotwebtools.org/EventEmitter2/0.4.14/eventemitter2.min.js"></script>
+	<script src="https://static.robotwebtools.org/keyboardteleopjs/0.3.0/keyboardteleop.js"></script>
+	<script src="peer.js"></script>
 </head>
 
 <body>
-  <div id="aframe" class="fullheight">
-    <a-scene embedded>
-      <a-videosphere src="#player"></a-videosphere>
-      <a-camera user-height="0" rotation="-35 90 0"></a-camera>
-      <a-assets>
-        <video id="player" autoplay="true"></video>
-      </a-assets>
-    </a-scene>
-  </div>
+	<div id="aframe" class="fullheight">
+		<a-scene embedded>
+			<a-videosphere src="#player"></a-videosphere>
+			<a-camera user-height="0" rotation="-35 90 0"></a-camera>
+			<a-assets>
+				<video id="player" autoplay="autoplay"></video>
+			</a-assets>
+		</a-scene>
+	</div>
 
-  <form style="position:absolute;top:10px;left:10px;">
-    <input id="robotID" placeholder="Robot ID">
-    <input id="call" type="button" value="Call">
-  </form>
-  <form style="position:absolute;top:40px;left:10px;">
-    <input id="robotAddress" type="list" list="robotAddressList" placeholder="Robot Address" size="48">
-    <datalist id="robotAddressList">
-      <option value="ws://pi-desktop:9090/"/>
-      <option value="ws://raspi-ros00:9090/"/>
-      <option value="ws://raspi-ros01:9090/"/>
-      <option value="ws://gazeit-VirtualBox:9090/"/>
-    </datalist>
-    <input id="connect" type="button" value="Connect">
-    <input id="disconnect" type="button" value="Disconnect" disabled="true">
-  </form>
+	<form style="position:absolute;top:10px;left:10px;">
+		<input id="robotID" placeholder="Robot ID" />
+		<input id="call" type="button" value="Call" />
+	</form>
+	<form style="position:absolute;top:40px;left:10px;">
+		<input id="robotAddress" list="robotAddressList" placeholder="Robot Address" size="48">
+		<datalist id="robotAddressList">
+			<option>ws://pi-desktop:9090/</option>
+			<option>ws://raspi-ros00:9090/</option>
+			<option>ws://raspi-ros01:9090/</option>
+			<option>ws://gazeit-VirtualBox:9090/</option>
+		</datalist>
+		<input id="connect" type="button" value="Connect" />
+		<input id="disconnect" type="button" value="Disconnect" disabled="disabled" />
+	</form>
 
-  <div id="map" class="fullheight">
-    <!-- <object id="mapobject" class="fullheight" data="../r3-geofencing/Ros.html">
-      Warning: Map could not be included.
-    </object> -->
-  </div>
+	<div id="map" class="fullheight">
+		<!-- <object id="mapobject" class="fullheight" data="../r3-geofencing/Ros.html">
+			Warning: Map could not be included.
+		</object> -->
+	</div>
 
-  <script src="user.js"></script>
+	<script src="user.js"></script>
 </body>
 
 </html>
