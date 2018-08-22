@@ -29,7 +29,7 @@ ros.on('connection', () => {
   mapObject.innerHTML = 'Warning: Map could not be included.';
   mapObject.className = 'fullheight';
   mapObject.setAttribute('id', 'mapobject');
-  mapObject.setAttribute('data', '../r3-geofencing/Ros.html');
+  mapObject.setAttribute('data', '../map/index.html');
 
   mapDiv.appendChild(mapObject);
 });
