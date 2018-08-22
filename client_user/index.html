@@ -5,7 +5,7 @@
 	<title>DTU-R3 Telepresence robot - User interface</title>
 	<meta name="robots" content="noindex" />
 	<link rel="stylesheet" href="style.css" />
-	<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+	<script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
 	<script src="https://static.robotwebtools.org/roslibjs/0.20.0/roslib.min.js"></script>
 	<script src="https://static.robotwebtools.org/EventEmitter2/0.4.14/eventemitter2.min.js"></script>
 	<script src="https://static.robotwebtools.org/keyboardteleopjs/0.3.0/keyboardteleop.js"></script>
@@ -15,8 +15,8 @@
 <body>
 	<div id="aframe" class="fullheight">
 		<a-scene embedded>
-			<a-videosphere src="#player"></a-videosphere>
-			<a-camera user-height="0" rotation="-35 90 0"></a-camera>
+			<a-videosphere src="#player" rotation="0 -90 -35"></a-videosphere>
+			<a-camera user-height="0"></a-camera>
 			<a-assets>
 				<video id="player" autoplay="autoplay"></video>
 			</a-assets>
