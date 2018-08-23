@@ -8,19 +8,6 @@ var list_ready = false;
 var data;
 get_data();
 
-/*if (data_ready){
-  var allowed_list = data.pois.poiIds;
-  var i;
-  var n = allowed_list.length;
-  var featuresArray2 = [];
-  for (i = 0; i<n; i++){
-    Mazemap.Data.getPoi(allowed_list[i]).then(poipoi => {featuresArray2.push(poipoi);});
-  }
-  console.log(featuresArray2);
-  list_ready = true;
-}*/
-
-
 var myMap = new Mazemap.Map({
   container: 'map',
   campuses: 89,
