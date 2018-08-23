@@ -1,0 +1,39 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  width: 100vw;
+  height: 100vh;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-color: rgb(216, 216, 216);
+}
+
+#controls {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 10px;
+  top: 10px;
+  left: 60px;
+  width: 500px;
+  height: auto;
+  right: 60px;
+  display: flex;
+}
+
+#controls button {
+  margin-top: 0px;
+  background-color: rgb(31, 175, 252);
+  padding: 0px 10px;
+  border-radius: 4px;
+  color: rgb(255, 255, 255);
+  width: auto;
+  border: 0;
+  flex-grow: 1;
+  margin: 0px 10px;
+}
