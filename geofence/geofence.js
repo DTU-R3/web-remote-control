@@ -131,7 +131,7 @@ function post_data() {
 function get_data() {
   var read = new XMLHttpRequest();
   var data_x;
-  read.open("GET", "../data/test.json", true);
+  read.open('GET', '../data/test.json' + '?' + Date.now(), true); // argument added to url to prevent caching
   read.onreadystatechange = function() {
     if (read.readyState != 4 || read.status != 200) {
       return;
