@@ -1,0 +1,43 @@
+<IfModule mod_dir.c>
+	DirectoryIndex	index.php index.html
+</IfModule>
+
+<IfModule mod_expires.c>
+	ExpiresActive	on
+	ExpiresByType	application/javascript	A604800
+	ExpiresByType	application/xhtml+xml	A14400
+	ExpiresByType	application/xml	A14400
+	ExpiresByType	image/gif	A2629744
+	ExpiresByType	image/jpeg	A2629744
+	ExpiresByType	image/png	A2629744
+	ExpiresByType	image/x-icon	A31556926
+	ExpiresByType	text/css	A604800
+	ExpiresByType	text/html	A14400
+	ExpiresByType	text/javascript	A604800
+	ExpiresByType	text/plain	A14400
+	<FilesMatch "\.php$">
+		ExpiresActive	Off
+	</FilesMatch>
+</IfModule>
+
+FileETag	None
+AddDefaultCharset	UTF-8
+
+<IfModule mod_mime.c>
+	AddCharset	UTF-8	.css
+	AddCharset	UTF-8	.html
+	AddCharset	UTF-8	.js
+	AddCharset	UTF-8	.json
+	AddCharset	UTF-8	.svg
+</IfModule>
+
+<IfModule mod_headers.c>
+	#Header setifempty Content-Security-Policy "default-src 'self'; frame-ancestors 'self'" "expr=%{CONTENT_TYPE} =~ m#application/xhtml[+]xml|text/html#i"
+	Header setifempty Strict-Transport-Security "max-age=15768000" env=HTTPS
+	Header setifempty X-Content-Type-Options "nosniff"
+	Header setifempty X-Frame-Options "SAMEORIGIN"
+
+	<Files "favicon.ico">
+		Header merge Cache-Control "public"
+	</Files>
+</IfModule>
