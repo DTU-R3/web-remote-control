@@ -1,0 +1,9 @@
+<IfModule mod_headers.c>
+	Header set Cache-Control "private, max-age=0, must-revalidate"
+</IfModule>
+<IfModule !mod_headers.c>
+	<IfModule mod_expires.c>
+		ExpiresActive on
+		ExpiresByType application/json A0
+	</IfModule>
+</IfModule>
