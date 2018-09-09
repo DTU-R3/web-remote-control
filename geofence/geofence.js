@@ -15,8 +15,8 @@ function Start_up() {
       lng: 12.514221376888127,
       lat: 55.78268545984302
     },
-    zoom: 17,
-    zLevel: 1,
+    zoom: 18,
+    zLevel: 3,
     scrollZoom: true,
     doubleClickZoom: false,
     touchZoomRotate: false,
