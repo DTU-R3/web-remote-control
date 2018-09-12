@@ -101,6 +101,8 @@ peer.on('open', id => {
 let robotAddressArray = [
   'raspi-ros00',
   'raspi-ros01',
+  'raspi-ros02',
+  'raspi-ros03',
   'pi-desktop',
   'gazeit-VirtualBox'
 ];
