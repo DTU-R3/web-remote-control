@@ -1,40 +1,8 @@
-var get_data_flag1 = false;
-var get_data_flag2 = true;
-var map_load_flag = false;
 var featuresArray2 = [];
 var data = [];
 var insert = true;
 var remove = false;
 var myMap = [];
-
-function Start_up() {
-  myMap = new Mazemap.Map({
-    container: 'map',
-    campuses: 89,
-    center: {
-      lng: 12.514221376888127,
-      lat: 55.78268545984302
-    },
-    zoom: 17,
-    zLevel: 1,
-    scrollZoom: true,
-    doubleClickZoom: false,
-    touchZoomRotate: false,
-  });
-}
-
-function Load_Map() {
-
-  addCustomLayer();
-
-  drawFeatures(featuresArray2);
-
-  myMap.on('click', onMapClick);
-
-}
-
-
-
 
 function onMapClick(e) {
 
@@ -66,14 +34,10 @@ function onMapClick(e) {
         list_of_pois.pop();
 
         data.pois.poiIds = list_of_pois;
-
       }
     }
-
   });
 }
-
-
 
 function addCustomLayer() {
   // Add a source layer to use with the layer for rendering geojson features
@@ -101,7 +65,6 @@ function addCustomLayer() {
   });
 }
 
-
 // Take an array of maemap features and draw them on the map
 function drawFeatures(featuresArray) {
   myMap.getSource("geojsonPOIs").setData({
@@ -110,6 +73,53 @@ function drawFeatures(featuresArray) {
   });
 }
 
+// read gefence data from test.json file and load the map
+var read = new XMLHttpRequest();
+var data_x;
+read.open('GET', '../data/test.json' + '?' + Date.now(), true); // argument added to url to prevent caching
+read.onreadystatechange = function() {
+  if (read.readyState != 4 || read.status != 200) {
+    return;
+  }
+  //alert("Success: " + read.responseText);
+  //TODO: sanitise data, handle exceptions
+  data_x = JSON.parse(read.responseText);
+
+  console.log(data_x);
+  data = data_x;
+  console.log(data_x);
+  var i;
+  var n = data.pois.poiIds.length;
+
+  for (i = 0; i < n; i++) {
+    Mazemap.Data.getPoi(data.pois.poiIds[i]).then(poipoi => {
+      featuresArray2.push(poipoi);
+    });
+  }
+
+  myMap = new Mazemap.Map({
+    container: 'map',
+    campuses: 89,
+    center: {
+      lng: 12.514221376888127,
+      lat: 55.78268545984302
+    },
+    zoom: 18,
+    zLevel: 3,
+    scrollZoom: true,
+    doubleClickZoom: false,
+    touchZoomRotate: false,
+  });
+
+  myMap.on('load', () => {
+    addCustomLayer();
+
+    drawFeatures(featuresArray2);
+
+    myMap.on('click', onMapClick);
+  });
+};
+read.send(null);
 
 
 function post_data() {
@@ -125,38 +135,6 @@ function post_data() {
   };
 
   r.send(JSON.stringify(data));
-
-}
-
-function get_data() {
-  var read = new XMLHttpRequest();
-  var data_x;
-  read.open('GET', '../data/test.json' + '?' + Date.now(), true); // argument added to url to prevent caching
-  read.onreadystatechange = function() {
-    if (read.readyState != 4 || read.status != 200) {
-      return;
-    }
-    //alert("Success: " + read.responseText);
-    //TODO: sanitise data, handle exceptions
-    data_x = JSON.parse(read.responseText);
-
-    console.log(data_x);
-    data = data_x;
-    console.log(data_x);
-    var i;
-    var n = data.pois.poiIds.length;
-
-    for (i = 0; i < n; i++) {
-      Mazemap.Data.getPoi(data.pois.poiIds[i]).then(poipoi => {
-        featuresArray2.push(poipoi);
-      });
-    }
-
-
-
-  };
-  read.send(null);
-  get_data_flag2 = true;
 }
 
 function set() {
