@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB" lang="en-GB">
 <head>
-  <meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
-  <meta charset="utf-8" />
-
-  <link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.9/mazemap.min.css">
-  <link rel="stylesheet" href="map.css">
-  <script type='text/javascript' src='https://api.mazemap.com/js/v2.0.9/mazemap.min.js'></script>
-  <script type="text/javascript" src="https://static.robotwebtools.org/EventEmitter2/0.4.14/eventemitter2.min.js"></script>
-  <script type="text/javascript" src="https://static.robotwebtools.org/roslibjs/0.20.0/roslib.min.js"></script>
+	<meta charset="UTF-8" />
+	<title>DTU-R3 Telepresence robot - User interface</title>
+	<meta name="robots" content="noindex" />
+	<meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
+	<link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.9/mazemap.min.css">
+	<link rel="stylesheet" href="map.css">
+	<script src="https://api.mazemap.com/js/v2.0.9/mazemap.min.js"></script>
+	<script src="https://static.robotwebtools.org/EventEmitter2/0.4.14/eventemitter2.min.js"></script>
+	<script src="https://static.robotwebtools.org/roslibjs/0.20.0/roslib.min.js"></script>
 </head>
 
 <body>
-  <div id="map" class="mazemap"></div>
-  <div id="controls" class="mapboxgl-ctrl-group">
-    <button onclick="Start_route()"> Start </button>
-    <button onclick="Stop()"> Stop </button>
-    <button onclick="Clear()"> Clear </button>
-    <button onclick="Next()"> Next </button>
-  </div>
+	<div id="map" class="mazemap"></div>
+	<div id="controls" class="mapboxgl-ctrl-group">
+		<button onclick="Start_route()"> Start </button>
+		<button onclick="Stop()"> Stop </button>
+		<button onclick="Clear()"> Clear </button>
+		<button onclick="Next()"> Next </button>
+	</div>
 
-  <script type="text/javascript" src="map.js"></script>
+	<script type="text/javascript" src="map.js"></script>
 </body>

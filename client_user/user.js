@@ -14,104 +14,101 @@ let connectionTimeoutHandle;
 const connectionTimeoutValue = 3000; // ms
 
 ros.on('connection', () => {
-  console.log('Connected to ', document.querySelector('#robotAddress').value);
+	console.log('Connected to ', document.querySelector('#robotAddress').value);
 
-  clearTimeout(connectionTimeoutHandle);
+	clearTimeout(connectionTimeoutHandle);
 
-  // add keyboard controls
-  let teleop = new KEYBOARDTELEOP.Teleop({
-    ros: ros,
-    topic: '/cmd_vel'
-  });
+	// add keyboard controls
+	let teleop = new KEYBOARDTELEOP.Teleop({
+		ros: ros,
+		topic: '/cmd_vel',
+	});
 
-  // open map
-  let mapObject = document.createElement('object');
-  mapObject.innerHTML = 'Warning: Map could not be included.';
-  mapObject.className = 'fullheight';
-  mapObject.setAttribute('id', 'mapobject');
-  mapObject.setAttribute('data', '../map/index.html');
+	// open map
+	let mapObject = document.createElement('object');
+	mapObject.innerHTML = 'Warning: Map could not be included.';
+	mapObject.className = 'fullheight';
+	mapObject.setAttribute('id', 'mapobject');
+	mapObject.setAttribute('data', '../map/index.html');
 
-  mapDiv.appendChild(mapObject);
+	mapDiv.appendChild(mapObject);
 });
 
 ros.on('close', () => {
-    mapDiv.innerHTML = '';
+	mapDiv.innerHTML = '';
 
-    robotAddressInput.disabled = false;
-    robotAddressInput.value = '';
-    connectBtn.disabled = false;
-    disconnectBtn.disabled = true;
+	robotAddressInput.disabled = false;
+	robotAddressInput.value = '';
+	connectBtn.disabled = false;
+	disconnectBtn.disabled = true;
 });
 
 ros.on('error', error => {
-  alert('Can\'t connect to ' + robotAddressInput.value);
-  console.log('Can\'t connect to ' + robotAddressInput.value, error);
+	alert('Cannot connect to ' + robotAddressInput.value);
+	console.log('Cannot connect to ' + robotAddressInput.value, error);
 
-  robotAddressInput.disabled = false;
-  connectBtn.disabled = false;
-  disconnectBtn.disabled = true;
+	robotAddressInput.disabled = false;
+	connectBtn.disabled = false;
+	disconnectBtn.disabled = true;
 });
 
 connectBtn.addEventListener('click', event => {
-  ros.connect(robotAddressInput.value);
+	ros.connect(robotAddressInput.value);
 
-  connectionTimeoutHandle = setTimeout(function () {ros.close()}, connectionTimeoutValue);
+	connectionTimeoutHandle = setTimeout(function () { ros.close(); }, connectionTimeoutValue);
 
-  robotAddressInput.disabled = true;
-  connectBtn.disabled = true;
-  disconnectBtn.disabled = false;
+	robotAddressInput.disabled = true;
+	connectBtn.disabled = true;
+	disconnectBtn.disabled = false;
 });
 
 disconnectBtn.addEventListener('click', event => {
-  ros.close();
+	ros.close();
 });
 
 callBtn.addEventListener('click', event => {
 
-  let call = peer.call(document.querySelector('#robotID').value, new MediaStream());
+	let call = peer.call(document.querySelector('#robotID').value, new MediaStream());
 
-  call.on('stream', stream => {
-    document.querySelector('#player').srcObject = stream;
-  });
+	call.on('stream', stream => {
+		document.querySelector('#player').srcObject = stream;
+	});
 });
 
 let peer = new Peer('user' + Math.random().toString(36).substr(2, 5), {
-  debug: 3,
-  host: 'r3.man.dtu.dk',
-  path: '/ws',
-  port: 443,
-  secure: true,
-  config: {
-    'iceServers': [{
-      urls: 'stun:stun.l.google.com:19302' // free STUN server from google
-    }]
-  }
+	debug: 3,
+	host: 'r3.man.dtu.dk',
+	path: '/ws',
+	port: 443,
+	secure: true,
+	config: {
+		'iceServers': [{
+			urls: 'stun:stun.l.google.com:19302', // free STUN server from google
+		}],
+	},
 });
 
 peer.on('error', err => {
-  alert(err);
-  console.log(err);
+	alert(err);
+	console.log(err);
 });
 
 peer.on('open', id => {
-  console.log('My peer ID is: ' + id);
+	console.log('My peer ID is: ' + id);
 });
 
 // add options to the robot address list
 let robotAddressArray = [
-  'raspi-ros00',
-  'raspi-ros01',
-  'raspi-ros02',
-  'raspi-ros03',
-  'pi-desktop',
-  'gazeit-VirtualBox'
+	'raspi-ros00',
+	'raspi-ros01',
+	'raspi-ros02',
+	'raspi-ros03',
 ];
 
 let robotAddressPrefix = 'wss://' + window.location.host + '/ros/';
 
-for (let i = 0; i < robotAddressArray.length; i++)
-{
-  let opt =  document.createElement('option');
-  opt.value = robotAddressPrefix + robotAddressArray[i] + '/';
-  robotAddressList.appendChild(opt);
+for (let i = 0; i < robotAddressArray.length; i++) {
+	let opt = document.createElement('option');
+	opt.value = robotAddressPrefix + robotAddressArray[i] + '/';
+	robotAddressList.appendChild(opt);
 }
