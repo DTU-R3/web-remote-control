@@ -1,7 +1,7 @@
 "use strict";
 /* globals Mazemap, ROSLIB */
 
-
+var geofencingEnabled = false;
 var data_ready = false;
 var list_ready = false;
 
@@ -49,6 +49,16 @@ var routeController;
 var featuresArray2 = [];
 var allowed_list = [];
 var etage = 1;
+
+function allowedArea(poiId) {
+	/*
+	if (!geofencingEnabled) {
+		return allowed_list.includes(poiId);
+	} else {
+		return true;
+	} */
+	return true;
+}
 
 var ros = new ROSLIB.Ros({
 	url: window.parent.document.querySelector('#robotAddress').value,
@@ -209,7 +219,7 @@ myMap.on('load', () => {
 				lng: future[0],
 				lat: future[1],
 			}, zLevel_robot).then(poi_robot => {
-				if (!allowed_list.includes(poi_robot.properties.id)) {
+				if (!allowedArea(poi_robot.properties.id)) {
 					Stop();
 					console.log('Robot in restricted area');
 				}
@@ -229,7 +239,7 @@ myMap.on('load', () => {
 
 		Mazemap.Data.getPoiAt(lngLat, zLevel).then(poi => {
 
-			if (allowed_list.includes(poi.properties.id)) {
+			if (allowedArea(poi.properties.id)) {
 				Lng_waypoint_arr[n] = e.lngLat.lng;
 				Lat_waypoint_arr[n] = e.lngLat.lat;
 				route_array[n + 1] = [e.lngLat.lng, e.lngLat.lat];
