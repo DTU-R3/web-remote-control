@@ -8,6 +8,7 @@ var list_ready = false;
 var data;
 get_data();
 
+/*
 var myMap = new Mazemap.Map({
 	container: 'map',
 	campuses: 89,
@@ -17,6 +18,21 @@ var myMap = new Mazemap.Map({
 	},
 	zoom: 17,
 	zLevel: 3,
+	scrollZoom: true,
+	doubleClickZoom: false,
+	touchZoomRotate: false,
+});
+*/
+
+var myMap = new Mazemap.Map({
+	container: 'map',
+	campuses: 179,
+	center: {
+		lng: 12.58635645,
+		lat: 55.6617067,
+	},
+	zoom: 17,
+	zLevel: 4,
 	scrollZoom: true,
 	doubleClickZoom: false,
 	touchZoomRotate: false,
