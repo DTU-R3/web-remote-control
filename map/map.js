@@ -24,7 +24,7 @@ var ros = new ROSLIB.Ros({
 // Initialise maze-map
 var myMap = new Mazemap.Map({
 	container: "map",
-	campuses: 179,
+	// campuses: 179,
 	center: {
 		lng: campus_lng,
 		lat: campus_lat,
@@ -138,11 +138,11 @@ myMap.on("load", () => {
 });
 
 function ZleveltoAltitude(z) {
-	return z * 3.0;
+	return z * 2.5;
 }
 
 function AltitudetoZlevel(alt) {
-	return Math.floor(alt / 3.0);
+	return Math.floor(alt / 2.5);
 }
 
 function Change_campus(id) {
@@ -174,10 +174,11 @@ function Change_campus(id) {
 function Change_campus_view() {
 	// If do not need to change campus
 	if (!change_campus) {
+		alert("Campus ID not found!");
 		return;
 	}
 	// Set map view
-	myMap.flyTo({
+	myMap.flyTo({	
 		center: {lng: campus_lng, lat: campus_lat},
 		zoom: campus_zoom,
 		speed: 3
@@ -233,6 +234,11 @@ function Next() {
 		Stop();
 		Clear();
 	}
+}
+
+function Change() {
+	var campus_id = document.querySelector('#campusId').value;
+	Change_campus(parseInt(campus_id));
 }
 
 // ROS publishers

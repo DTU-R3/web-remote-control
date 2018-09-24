@@ -18,12 +18,12 @@ hr {
 	box-sizing: border-box;
 	display: flex;
 	height: auto;
-	left: 60px;
+	left: 30px;
 	padding: 10px;
 	position: absolute;
-	right: 60px;
+	right: 30px;
 	top: 10px;
-	width: 500px;
+	width: 550px;
 }
 
 #controls button {
@@ -36,4 +36,8 @@ hr {
 	margin: 0px 10px;
 	padding: 0px 10px;
 	width: auto;
+}
+
+#controls input {
+	width: 100 px;
 }
