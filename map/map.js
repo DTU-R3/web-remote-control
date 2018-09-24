@@ -1,7 +1,6 @@
 "use strict";
 /* globals Mazemap, ROSLIB */
 
-var etage = 4;  // Height, shoud be based on altitude 
 var robotPos_lngLatAlt= [];
 var waypointArr_lngLatAlt = [];
 var waypoints_number = 0;
@@ -11,6 +10,7 @@ var start_nav = false;
 
 // Compus info
 var change_campus = false;
+var campus_id = 179;
 var campus_lng = 12.58635645;
 var campus_lat = 55.6617067;
 var campus_zoom = 17;
@@ -32,8 +32,9 @@ var myMap = new Mazemap.Map({
 	zoom: campus_zoom,
 	zLevel: init_zlevel,
 	scrollZoom: true,
-	doubleClickZoom: false,
-	touchZoomRotate: false,
+	doubleClickZoom: true,
+	touchZoomRotate: true,
+	zLevelControl: true
 });
 
 // When the map is loaded
@@ -61,7 +62,7 @@ myMap.on("load", () => {
 	
 	// Visual representation of robot
 	var blueDot = new Mazemap.BlueDot({
-		zLevel: etage,
+		zLevel: init_zlevel,
 		accuracyCircle: false,
 		style: {
 			"normal": {
@@ -99,6 +100,7 @@ myMap.on("load", () => {
 			lng: robotPos_lngLatAlt[0],
 			lat: robotPos_lngLatAlt[1],
 		});
+		blueDot.setZLevel(AltitudetoZlevel(robotPos_lngLatAlt[2]));
 	});
 	
 	// Waypoint reach Subscriber
@@ -109,21 +111,7 @@ myMap.on("load", () => {
 	});
 	reachSub.subscribe(function(message) {
 		if(message.data) {
-			if(waypointArr_lngLatAlt.length <= 1) {
-				Stop();
-				return;
-			}
-			// Update the route
-			waypointArr_lngLatAlt.splice(0, 1);
-			waypoints_number--;
-			if(waypointArr_lngLatAlt.length > 1) {
-				setRoute(waypointArr_lngLatAlt);
-				WaypointPub(waypointArr_lngLatAlt[1]);
-			}
-			else {
-				Stop();
-				Clear();
-			}
+			Next();
 		}
 	});
 	
@@ -150,16 +138,11 @@ myMap.on("load", () => {
 });
 
 function ZleveltoAltitude(z) {
-	if(z > 0) {
-		return (z - 1)* 5;
-	}
-	else {
-		return (z + 1)* 5;
-	}
+	return z * 3.0;
 }
 
 function AltitudetoZlevel(alt) {
-	return Math.ceil(alt / 5.0) - 1.0;
+	return Math.floor(alt / 3.0);
 }
 
 function Change_campus(id) {
@@ -175,6 +158,7 @@ function Change_campus(id) {
 		json_data = JSON.parse(read.responseText);
 		for (var i=0; i<json_data.Campus.length; i++) {
 			if(json_data.Campus[i].CampusId == id) {
+				campus_id = json_data.Campus[i].CampusId;
 				campus_lng = json_data.Campus[i].lng;
 				campus_lat = json_data.Campus[i].lat;
 				campus_zoom = json_data.Campus[i].zoom;
@@ -203,12 +187,11 @@ function Change_campus_view() {
 
 
 function setRoute(r_array) {
-	// TODO: test routeController
 	routeController.clear(); // Clear existing route, if any
 	Mazemap.Data.getRouteJSON({
-			poiId: 270303,
+			poiId: 270289,
 		}, {
-			poiId: 270326,
+			poiId: 270325,
 		})
 		.then(function(geojson) {
 			var route = geojson.features[0];
@@ -239,7 +222,17 @@ function Clear() {
 }
 
 function Next() {
-	// TODO: test the functionality
+	// Update the route
+	waypointArr_lngLatAlt.splice(0, 1);
+	waypoints_number--;
+	if(waypointArr_lngLatAlt.length > 1) {
+		setRoute(waypointArr_lngLatAlt);
+		WaypointPub(waypointArr_lngLatAlt[1]);
+	}
+	else {
+		Stop();
+		Clear();
+	}
 }
 
 // ROS publishers

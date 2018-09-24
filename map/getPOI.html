@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.10/mazemap.min.css">
+    <script type='text/javascript' src='https://api.mazemap.com/js/v2.0.10/mazemap.min.js'></script>
+
+    <style>
+        body { margin:0px; padding:0px; width: 100vw; height:100vh; font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; font-size: 14px; line-height: 1.42857143; }
+        hr { border: 0; height: 1px; background-color: rgb(216, 216, 216); }
+        #map {width: 50% !important;}
+        #poidata {border-left: 1px solid rgb(230, 230, 230); width: 50%; position: absolute; right: 0px; top: 0px; height: 100%; padding: 10px; box-sizing: border-box; overflow: auto;}
+    </style>
+</head>
+<body>
+    <div id="map" class="mazemap"></div>
+    <div id="poidata"><h2>POI Data</h2><hr /><pre><code id="poi-data"></code></pre></div>
+
+    <script>
+
+        // Just the same way to initialize as always...
+        var myMap = new Mazemap.Map({
+            container: 'map',
+            campuses: 89,
+            center: {lng: 12.514221376888127, lat: 55.78268545984302},
+            zoom: 17,
+            zLevel: 1,
+            scrollZoom: true,
+            doubleClickZoom: false,
+            touchZoomRotate: false
+        });
+
+        myMap.on('load', function(){
+            // Initialize a Highlighter for POIs
+            // Storing the object on the map just makes it easy to access for other things
+            myMap.highlighter = new Mazemap.Highlighter( myMap, {
+                showOutline: true,
+                showFill: true,
+                outlineColor: Mazemap.Util.Colors.MazeColors.MazeBlue,
+                fillColor: Mazemap.Util.Colors.MazeColors.MazeBlue
+            } );
+            myMap.on('click', onMapClick);
+
+        });
+
+        // define a global
+        var mazeMarker;
+
+        function onMapClick(e){
+            // Clear existing, if any
+            clearPoiMarker();
+
+            var lngLat = e.lngLat;
+            var zLevel = myMap.zLevel;
+
+            // Fetching via Data API
+            Mazemap.Data.getPoiAt(lngLat, zLevel).then( poi => {
+
+                printPoiData(poi);
+
+                placePoiMarker(poi);
+
+            }).catch( function(){ return false; } );
+        }
+
+        function printPoiData(poi){
+            var poiStr = JSON.stringify(poi, null, 2); // spacing level = 2
+            document.getElementById('poi-data').innerHTML = poiStr;
+
+            console.log(poi); // Can also look in your console to see the object there
+        }
+
+        function clearPoiMarker(poi){
+            if(mazeMarker){
+                mazeMarker.remove();
+            }
+            myMap.highlighter.clear();
+        };
+
+        function placePoiMarker(poi){
+
+            // Get a center point for the POI, because the data can return a polygon instead of just a point sometimes
+            var lngLat = Mazemap.Util.getPoiLngLat(poi);
+
+            mazeMarker = new Mazemap.MazeMarker({
+                color: '#ff00cc',
+                innerCircle: true,
+                innerCircleColor: '#FFF',
+                size: 34,
+                innerCircleScale: 0.5,
+                zLevel: poi.properties.zLevel
+            })
+            .setLngLat(lngLat)
+            .addTo(myMap);
+
+            // If we have a polygon, use the default 'highlight' function to draw a marked outline around the POI.
+            if(poi.geometry.type === "Polygon"){
+                myMap.highlighter.highlight(poi);
+            }
+            myMap.flyTo({center: lngLat, zoom: 19, speed: 0.5});
+        }
+    </script>
+</body>
