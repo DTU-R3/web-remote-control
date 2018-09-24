@@ -1,12 +1,15 @@
 "use strict";
 /* globals Mazemap, ROSLIB */
 
+// Waypoint control
 var robotPos_lngLatAlt= [];
 var waypointArr_lngLatAlt = [];
 var waypoints_number = 0;
 var routeController;
 
-var start_nav = false;
+// Geo fencing
+var geofencingEnabled = true;
+var allowed_areas = [];
 
 // Compus info
 var change_campus = false;
@@ -24,7 +27,7 @@ var ros = new ROSLIB.Ros({
 // Initialise maze-map
 var myMap = new Mazemap.Map({
 	container: "map",
-	// campuses: 179,
+	campuses: 179,
 	center: {
 		lng: campus_lng,
 		lat: campus_lat,
@@ -42,8 +45,10 @@ myMap.on("load", () => {
 	// Custmise route visual representation
 	routeController = new Mazemap.RouteController(myMap, {
 		routeLineColorPrimary: "#E52337",
-		routeLineColorSecondary: "#888888",
+		routeLineColorSecondary: "#E52337",
 	});
+	
+	Get_fencing();
 	
 	// On ROS connected
 	ros.on("connection", function() {
@@ -84,6 +89,32 @@ myMap.on("load", () => {
 		lng: robotPos_lngLatAlt[0],
 		lat: robotPos_lngLatAlt[1],
 	}).addTo(myMap);
+	
+	var greenDot = new Mazemap.BlueDot({
+		zLevel: init_zlevel,
+		radius: 1,
+		accuracyCircle: false,
+		fillColor: Mazemap.Util.Colors.MazeColors.MazeGreen,
+		style: {
+			"normal": {
+				"blueDot": {
+					"paint": {
+						"circle-stroke-width": 1,
+						"circle-radius": {
+							"base": 1,
+							"stops": [
+								[3, 3],
+								[3, 3],
+							],
+						},
+					},
+				},
+			},
+		},
+	}).setLngLat({
+		lng: robotPos_lngLatAlt[0],
+		lat: robotPos_lngLatAlt[1],
+	}).addTo(myMap);
 
 	// GPS pose Subscriber
 	var gpsSub = new ROSLIB.Topic({
@@ -95,12 +126,41 @@ myMap.on("load", () => {
 		robotPos_lngLatAlt[0] = message.pose.pose.position.x;
 		robotPos_lngLatAlt[1] = message.pose.pose.position.y;
 		robotPos_lngLatAlt[2] = message.pose.pose.position.z;
-		// TODO: Set height of the dot
 		blueDot.setLngLat({
 			lng: robotPos_lngLatAlt[0],
 			lat: robotPos_lngLatAlt[1],
 		});
 		blueDot.setZLevel(AltitudetoZlevel(robotPos_lngLatAlt[2]));
+	});
+	
+	// Prediction Subscriber
+	var predictSub = new ROSLIB.Topic({
+		ros: ros,
+		name: "/robot_predict_pose",
+		messageType: "nav_msgs/Odometry",
+	});	
+	predictSub.subscribe(function(message) {
+		var predictLng = message.pose.pose.position.x;
+		var predictLat = message.pose.pose.position.y;
+		var predictAlt = message.pose.pose.position.z;
+		
+		greenDot.setLngLat({
+			lng: predictLng,
+			lat: predictLat,
+		});
+		greenDot.setZLevel(AltitudetoZlevel(predictAlt));
+		
+		Mazemap.Data.getPoiAt({
+				lng: predictLng,
+				lat: predictLat,
+			}, AltitudetoZlevel(predictAlt)).then(poi => {
+			if (!Area_allowed(poi.properties.id)) {
+				alert('Heading to restricted area');
+				Stop();
+			}
+		}).catch(function () {
+			return false;
+		});
 	});
 	
 	// Waypoint reach Subscriber
@@ -130,10 +190,19 @@ myMap.on("load", () => {
 	// Mouse click event handler
 	function onMapClick(e) {
 		var zLevel = myMap.zLevel;
-		waypointArr_lngLatAlt[0] = robotPos_lngLatAlt;
-		waypointArr_lngLatAlt[waypoints_number + 1] = [e.lngLat.lng, e.lngLat.lat, ZleveltoAltitude(zLevel)];
-		waypoints_number++;
-		setRoute(waypointArr_lngLatAlt);
+		Mazemap.Data.getPoiAt(e.lngLat, zLevel).then(poi => {
+			if (!Area_allowed(poi.properties.id)) {
+				alert('Waypoint is not allowed in that area');
+				return;
+			} else {
+				waypointArr_lngLatAlt[0] = robotPos_lngLatAlt;
+				waypointArr_lngLatAlt[waypoints_number + 1] = [e.lngLat.lng, e.lngLat.lat, ZleveltoAltitude(zLevel)];
+				waypoints_number++;
+				setRoute(waypointArr_lngLatAlt);
+			}
+		}).catch(function () {
+			return false;
+		});
 	}
 });
 
@@ -143,6 +212,14 @@ function ZleveltoAltitude(z) {
 
 function AltitudetoZlevel(alt) {
 	return Math.floor(alt / 2.5);
+}
+
+function Area_allowed(poiId) {
+	if (geofencingEnabled) {
+		return allowed_areas.includes(poiId);
+	} else {
+		return true;
+	}
 }
 
 function Change_campus(id) {
@@ -186,6 +263,21 @@ function Change_campus_view() {
 	change_campus = false
 }
 
+function Get_fencing() {
+	// Read fencing areas
+	var read = new XMLHttpRequest();
+	var json_data;
+	
+	read.open("GET", "fencing.json", true);
+	read.onreadystatechange = function() {
+		if (read.readyState != 4 || read.status != 200) {
+			return;
+		}
+		json_data = JSON.parse(read.responseText);
+		allowed_areas = json_data.areas.poiIds;
+	};
+	read.send(null);
+}
 
 function setRoute(r_array) {
 	routeController.clear(); // Clear existing route, if any
@@ -204,7 +296,6 @@ function setRoute(r_array) {
 
 // Web events
 function Start_route() {
-	start_nav = true;
 	FwdThresPub(0.2);
 	TurnThresPub(0.2);
 	StatePub("RUNNING");
@@ -212,7 +303,6 @@ function Start_route() {
 }
 
 function Stop() {
-	start_nav = false;
 	StatePub("STOP");
 }
 
