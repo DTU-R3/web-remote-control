@@ -6,9 +6,11 @@ var robotPos_lngLatAlt= [];
 var waypointArr_lngLatAlt = [];
 var waypoints_number = 0;
 var routeController;
+var highlighter;
 
 // Geo fencing
 var geofencingEnabled = true;
+var poi_data;
 var allowed_areas = [];
 
 // Compus info
@@ -47,7 +49,15 @@ myMap.on("load", () => {
 		routeLineColorPrimary: "#E52337",
 		routeLineColorSecondary: "#E52337",
 	});
+
+	// Highlighter
+	highlighter = new Mazemap.Highlighter( myMap, {
+		showOutline: false,
+		showFill: true,
+		fillColor: Mazemap.Util.Colors.MazeColors.MazeGreen,
+	});
 	
+	// Get geo_fencing areas	
 	Get_fencing();
 	
 	// On ROS connected
@@ -267,15 +277,16 @@ function Change_campus_view() {
 function Get_fencing() {
 	// Read fencing areas
 	var read = new XMLHttpRequest();
-	var json_data;
-	
-	read.open("GET", "fencing.json", true);
+	read.open("GET", "pois.json", true);
 	read.onreadystatechange = function() {
 		if (read.readyState != 4 || read.status != 200) {
 			return;
 		}
-		json_data = JSON.parse(read.responseText);
-		allowed_areas = json_data.areas.poiIds;
+		poi_data = JSON.parse(read.responseText);
+		for(var i=0; i<poi_data.length; i++) {
+			allowed_areas[i] = poi_data[i].properties.poiId;
+		}
+		highlighter.highlight(poi_data);
 	};
 	read.send(null);
 }
