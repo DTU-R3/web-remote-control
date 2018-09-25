@@ -90,11 +90,11 @@ myMap.on("load", () => {
 		lat: robotPos_lngLatAlt[1],
 	}).addTo(myMap);
 	
-	var greenDot = new Mazemap.BlueDot({
+	var redDot = new Mazemap.BlueDot({
 		zLevel: init_zlevel,
 		radius: 1,
 		accuracyCircle: false,
-		fillColor: Mazemap.Util.Colors.MazeColors.MazeGreen,
+		fillColor: Mazemap.Util.Colors.MazeColors.MazeRed,
 		style: {
 			"normal": {
 				"blueDot": {
@@ -144,19 +144,20 @@ myMap.on("load", () => {
 		var predictLat = message.pose.pose.position.y;
 		var predictAlt = message.pose.pose.position.z;
 		
-		greenDot.setLngLat({
+		redDot.setLngLat({
 			lng: predictLng,
 			lat: predictLat,
 		});
-		greenDot.setZLevel(AltitudetoZlevel(predictAlt));
+		redDot.setZLevel(AltitudetoZlevel(predictAlt));
 		
 		Mazemap.Data.getPoiAt({
 				lng: predictLng,
 				lat: predictLat,
 			}, AltitudetoZlevel(predictAlt)).then(poi => {
 			if (!Area_allowed(poi.properties.id)) {
-				alert('Heading to restricted area');
 				Stop();
+				ClearVelPub();
+				alert('Heading to restricted area');
 			}
 		}).catch(function () {
 			return false;
@@ -378,6 +379,27 @@ function TurnThresPub(f) {
 	});
 	var msg = new ROSLIB.Message({
 		data: f
+	});
+	pub.publish(msg);
+}
+
+function ClearVelPub() {
+	var pub = new ROSLIB.Topic({
+		ros: ros,
+		name: "/cmd_vel",
+		messageType: "geometry_msgs/Twist",
+	});
+	var msg = new ROSLIB.Message({
+		linear: {
+			x: 0,
+			y: 0,
+			z: 0
+		},
+		angular: {
+			x: 0,
+			y: 0,
+			z: 0
+		}
 	});
 	pub.publish(msg);
 }
