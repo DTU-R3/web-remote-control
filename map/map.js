@@ -261,24 +261,20 @@ function Change_campus(id) {
 				break;
 			}
 		}
+		// If do not need to change campus
+		if (!change_campus) {
+			alert("Campus ID not found!");
+			return;
+		}
+		// Set map view
+		myMap.flyTo({	
+			center: {lng: campus_lng, lat: campus_lat},
+			zoom: campus_zoom,
+			speed: 3
+		});
+		change_campus = false
 	};
 	read.send(null);
-	setTimeout(Change_campus_view, 1000);
-}
-
-function Change_campus_view() {
-	// If do not need to change campus
-	if (!change_campus) {
-		alert("Campus ID not found!");
-		return;
-	}
-	// Set map view
-	myMap.flyTo({	
-		center: {lng: campus_lng, lat: campus_lat},
-		zoom: campus_zoom,
-		speed: 3
-	});
-	change_campus = false
 }
 
 function Get_fencing() {
