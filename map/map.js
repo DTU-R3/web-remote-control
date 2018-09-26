@@ -15,11 +15,18 @@ var allowed_areas = [];
 
 // Compus info
 var change_campus = false;
+var campus_zoom = 17;
+/* Alexandra Institue
 var campus_id = 179;
 var campus_lng = 12.58635645;
 var campus_lat = 55.6617067;
-var campus_zoom = 17;
 var init_zlevel = 4;
+*/
+/* DTU Management */
+var campus_id = 89;
+var campus_lng = 12.514221376888127;
+var campus_lat = 55.78268545984302;
+var init_zlevel = 3;
 
 // Specify robot to connect
 var ros = new ROSLIB.Ros({
@@ -29,7 +36,7 @@ var ros = new ROSLIB.Ros({
 // Initialise maze-map
 var myMap = new Mazemap.Map({
 	container: "map",
-	campuses: 179,
+	campuses: campus_id,
 	center: {
 		lng: campus_lng,
 		lat: campus_lat,
@@ -294,9 +301,9 @@ function Get_fencing() {
 function setRoute(r_array) {
 	routeController.clear(); // Clear existing route, if any
 	Mazemap.Data.getRouteJSON({
-			poiId: 270289,
+			poiId: 270303,
 		}, {
-			poiId: 270325,
+			poiId: 270326,
 		})
 		.then(function(geojson) {
 			var route = geojson.features[0];
