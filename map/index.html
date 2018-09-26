@@ -19,11 +19,12 @@
 		<button onclick="Stop()"> Stop </button>
 		<button onclick="Clear()"> Clear </button>
 		<button onclick="Next()"> Next </button>
-		<select id="campusId">
+		<input id="campusId" list="campusList" placeholder="Campus ID" size="20">
+		<datalist id="campusList">
 			<option value="89">DTU Lyngby</option>
 			<option value="88">DTU Ballerup</option>
-			<option value="179">Alexandra Institute</option>
-		</select>
+			<option value="179">Univate</option>
+		</datalist>
 		<button onclick="Change()"> Campus </button>
 	</div>
 
