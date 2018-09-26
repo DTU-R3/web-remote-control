@@ -36,7 +36,7 @@ var ros = new ROSLIB.Ros({
 // Initialise maze-map
 var myMap = new Mazemap.Map({
 	container: "map",
-	campuses: campus_id,
+	// campuses: 179,
 	center: {
 		lng: campus_lng,
 		lat: campus_lat,
@@ -346,8 +346,8 @@ function Next() {
 }
 
 function Change() {
-	var campus_id = document.querySelector('#campusId').value;
-	Change_campus(parseInt(campus_id));
+	var campus = document.querySelector('#campusId').value;
+	Change_campus(parseInt(campus));
 }
 
 // ROS publishers
