@@ -7,6 +7,7 @@ var waypointArr_lngLatAlt = [];
 var waypoints_number = 0;
 var routeController;
 var highlighter;
+var waypoint_id = 0;
 
 // Geo fencing
 var geofencingEnabled = true;
@@ -16,17 +17,18 @@ var allowed_areas = [];
 // Compus info
 var change_campus = false;
 var campus_zoom = 17;
-/* Alexandra Institue
+/* Alexandra Institue */
 var campus_id = 179;
 var campus_lng = 12.58635645;
 var campus_lat = 55.6617067;
 var init_zlevel = 4;
-*/
-/* DTU Management */
+
+/* DTU Management 
 var campus_id = 89;
 var campus_lng = 12.514221376888127;
 var campus_lat = 55.78268545984302;
 var init_zlevel = 3;
+*/
 
 // Specify robot to connect
 var ros = new ROSLIB.Ros({
@@ -36,7 +38,7 @@ var ros = new ROSLIB.Ros({
 // Initialise maze-map
 var myMap = new Mazemap.Map({
 	container: "map",
-	// campuses: 179,
+	campuses: 179,
 	center: {
 		lng: campus_lng,
 		lat: campus_lat,
@@ -147,7 +149,8 @@ myMap.on("load", () => {
 			lng: robotPos_lngLatAlt[0],
 			lat: robotPos_lngLatAlt[1],
 		});
-		blueDot.setZLevel(AltitudetoZlevel(robotPos_lngLatAlt[2]));
+		blueDot.setZLevel(4);
+		// blueDot.setZLevel(AltitudetoZlevel(robotPos_lngLatAlt[2]));
 	});
 	
 	// Prediction Subscriber
@@ -165,12 +168,13 @@ myMap.on("load", () => {
 			lng: predictLng,
 			lat: predictLat,
 		});
-		redDot.setZLevel(AltitudetoZlevel(predictAlt));
+		redDot.setZLevel(4);
+		// redDot.setZLevel(AltitudetoZlevel(predictAlt));
 		
 		Mazemap.Data.getPoiAt({
 				lng: predictLng,
 				lat: predictLat,
-			}, AltitudetoZlevel(predictAlt)).then(poi => {
+			}, 4).then(poi => {
 			if (!Area_allowed(poi.properties.id)) {
 				Stop();
 				ClearVelPub();
@@ -185,12 +189,13 @@ myMap.on("load", () => {
 	var reachSub = new ROSLIB.Topic({
 		ros: ros,
 		name: "/waypoint/reached",
-		messageType: "std_msgs/Bool",
+		messageType: "std_msgs/Int32",
 	});
 	reachSub.subscribe(function(message) {
-		if(message.data) {
+		if(message.data > waypoint_id) {
 			Next();
 		}
+		waypoint_id = message.data;
 	});
 	
 	// Campus id Subscriber
