@@ -2,16 +2,20 @@
 "use strict";
 
 let callBtn = document.querySelector('#call');
+let call2dBtn = document.querySelector('#call2d');
 let robotAddressInput = document.querySelector('#robotAddress');
 let robotAddressList = document.querySelector('#robotAddressList');
 let connectBtn = document.querySelector('#connect');
 let disconnectBtn = document.querySelector('#disconnect');
+let playerDiv = document.querySelector('#aframe');
 let mapDiv = document.querySelector('#map');
 
 let ros = new ROSLIB.Ros;
 
 let connectionTimeoutHandle;
 const connectionTimeoutValue = 3000; // ms
+
+
 
 ros.on('connection', () => {
 	console.log('Connected to ', document.querySelector('#robotAddress').value);
@@ -67,6 +71,32 @@ disconnectBtn.addEventListener('click', event => {
 });
 
 callBtn.addEventListener('click', event => {
+
+	callBtn.disabled = true;
+	call2dBtn.disabled = true;
+
+	playerDiv.innerHTML =
+	'<a-scene embedded> \
+		<a-videosphere src="#player" rotation="0 -90 -35"></a-videosphere> \
+		<a-camera user-height="0"></a-camera> \
+		<a-assets> \
+			<video id="player" autoplay="autoplay"></video> \
+		</a-assets> \
+	</a-scene>';
+
+	let call = peer.call(document.querySelector('#robotID').value, new MediaStream());
+
+	call.on('stream', stream => {
+		document.querySelector('#player').srcObject = stream;
+	});
+});
+
+call2dBtn.addEventListener('click', event => {
+
+	callBtn.disabled = true;
+	call2dBtn.disabled = true;
+
+	playerDiv.innerHTML = '<video id="player" autoplay="autoplay"></video>';
 
 	let call = peer.call(document.querySelector('#robotID').value, new MediaStream());
 

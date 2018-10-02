@@ -15,12 +15,21 @@ html, body {
 
 #aframe {
 	width: 60%;
+	background-color: black;
 }
 
 #map {
 	width: 40%;
+	background-color: black;
 }
 
 #mapobject {
 	width: 100%;
+}
+
+#player {
+	width: 100%;
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
 }

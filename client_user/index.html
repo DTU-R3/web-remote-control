@@ -13,19 +13,12 @@
 </head>
 
 <body>
-	<div id="aframe" class="fullheight">
-		<a-scene embedded>
-			<a-videosphere src="#player" rotation="0 -90 -35"></a-videosphere>
-			<a-camera user-height="0"></a-camera>
-			<a-assets>
-				<video id="player" autoplay="autoplay"></video>
-			</a-assets>
-		</a-scene>
-	</div>
+	<div id="aframe" class="fullheight"></div>
 
 	<form style="position:absolute;top:10px;left:10px;">
 		<input id="robotID" placeholder="Robot ID" />
-		<input id="call" type="button" value="Call" />
+		<input id="call" type="button" value="Call 360" />
+		<input id="call2d" type="button" value="Call 2D" />
 	</form>
 	<form style="position:absolute;top:40px;left:10px;">
 		<input id="robotAddress" list="robotAddressList" placeholder="Robot Address" size="48">
