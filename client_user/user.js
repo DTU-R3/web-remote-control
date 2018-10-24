@@ -3,12 +3,14 @@
 
 let callBtn = document.querySelector('#call');
 let call2dBtn = document.querySelector('#call2d');
+let setMapBtn = document.querySelector('#SetMap');
 let robotAddressInput = document.querySelector('#robotAddress');
 let robotAddressList = document.querySelector('#robotAddressList');
 let connectBtn = document.querySelector('#connect');
 let disconnectBtn = document.querySelector('#disconnect');
 let playerDiv = document.querySelector('#aframe');
 let mapDiv = document.querySelector('#map');
+
 
 let ros = new ROSLIB.Ros;
 
@@ -103,6 +105,13 @@ call2dBtn.addEventListener('click', event => {
 	call.on('stream', stream => {
 		document.querySelector('#player').srcObject = stream;
 	});
+});
+
+setMapBtn.addEventListener('click', event => {
+	document.querySelector('#aframe').style.width = document.querySelector('#VideoSize').value + '%';
+	document.querySelector('#aframe').style.height = '100%';
+	document.querySelector('#map').style.width = (100 - parseInt(document.querySelector('#VideoSize').value)) + '%';
+	document.querySelector('#map').style.height = '100%';
 });
 
 let peer = new Peer('user' + Math.random().toString(36).substr(2, 5), {
