@@ -2,7 +2,7 @@
 /* globals Mazemap, ROSLIB */
 
 // Waypoint control
-var robotPos_lngLatAlt= [];
+var robotPos_lngLatAlt= [0,0];
 var waypointArr_lngLatAlt = [];
 var waypoints_number = 0;
 var routeController;
@@ -189,7 +189,7 @@ myMap.on("load", () => {
 		messageType: "sensor_msgs/NavSatFix",
 	});
 	reachSub.subscribe(function(message) {
-		if((message.data.longitude == waypointArr_lngLatAlt[1][0]) && (message.data.latitude == waypointArr_lngLatAlt[1][1])) {
+		if((message.longitude == waypointArr_lngLatAlt[1][0]) && (message.latitude == waypointArr_lngLatAlt[1][1])) {
 			Next();
 		}
 	});
