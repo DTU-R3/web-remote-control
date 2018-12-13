@@ -142,6 +142,7 @@ let robotAddressArray = [
 	'raspi-ros01',
 	'raspi-ros02',
 	'raspi-ros03',
+	'alex-raspi-ros',
 ];
 
 let robotAddressPrefix = 'wss://' + window.location.host + '/ros/';
