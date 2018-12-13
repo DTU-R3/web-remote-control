@@ -65,7 +65,7 @@ myMap.on("load", () => {
 		fillColor: Mazemap.Util.Colors.MazeColors.MazeGreen,
 	});
 	
-	// Get geo_fencing areas	
+	// Get geo_fencing areas
 	Get_fencing();
 	
 	// On ROS connected
@@ -149,7 +149,6 @@ myMap.on("load", () => {
 			lat: robotPos_lngLatAlt[1],
 		});
 		blueDot.setZLevel(4);
-		// blueDot.setZLevel(AltitudetoZlevel(robotPos_lngLatAlt[2]));
 	});
 	
 	// Prediction Subscriber
@@ -168,7 +167,6 @@ myMap.on("load", () => {
 			lat: predictLat,
 		});
 		redDot.setZLevel(4);
-		// redDot.setZLevel(AltitudetoZlevel(predictAlt));
 		
 		Mazemap.Data.getPoiAt({
 				lng: predictLng,
@@ -217,7 +215,7 @@ myMap.on("load", () => {
 				return;
 			} else {
 				waypointArr_lngLatAlt[0] = robotPos_lngLatAlt;
-				waypointArr_lngLatAlt[waypoints_number + 1] = [e.lngLat.lng, e.lngLat.lat, ZleveltoAltitude(zLevel)];
+				waypointArr_lngLatAlt[waypoints_number + 1] = [e.lngLat.lng, e.lngLat.lat, 0];
 				waypoints_number++;
 				setRoute(waypointArr_lngLatAlt);
 			}
@@ -226,14 +224,6 @@ myMap.on("load", () => {
 		});
 	}
 });
-
-function ZleveltoAltitude(z) {
-	return z * 2.5;
-}
-
-function AltitudetoZlevel(alt) {
-	return Math.floor(alt / 2.5);
-}
 
 function Area_allowed(poiId) {
 	if (geofencingEnabled) {
