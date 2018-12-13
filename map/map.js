@@ -7,7 +7,6 @@ var waypointArr_lngLatAlt = [];
 var waypoints_number = 0;
 var routeController;
 var highlighter;
-var waypoint_id = 0;
 
 // Geo fencing
 var geofencingEnabled = true;
@@ -158,7 +157,7 @@ myMap.on("load", () => {
 		ros: ros,
 		name: "/robot_predict_pose",
 		messageType: "nav_msgs/Odometry",
-	});	
+	});
 	predictSub.subscribe(function(message) {
 		var predictLng = message.pose.pose.position.x;
 		var predictLat = message.pose.pose.position.y;
@@ -189,13 +188,12 @@ myMap.on("load", () => {
 	var reachSub = new ROSLIB.Topic({
 		ros: ros,
 		name: "/waypoint/reached",
-		messageType: "std_msgs/Int32",
+		messageType: "sensor_msgs/NavSatFix",
 	});
 	reachSub.subscribe(function(message) {
-		if(message.data > waypoint_id) {
+		if((message.data.longitude == waypointArr_lngLatAlt[1][0]) && (message.data.latitude == waypointArr_lngLatAlt[1][1])) {
 			Next();
 		}
-		waypoint_id = message.data;
 	});
 	
 	// Campus id Subscriber
